@@ -1,0 +1,172 @@
+/* ===== Global Styles & Font Import ===== */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f0f2f5; /* Light gray background */
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+/* ===== Main Layout Container ===== */
+.page-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows forms to stack on small screens */
+    justify-content: center; /* Centers the forms */
+    align-items: flex-start; /* Aligns to the top */
+    gap: 30px; /* Space between the forms */
+    min-height: 100vh;
+}
+
+/* ===== Form Card Styling ===== */
+.form-container {
+    background: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box; /* Ensures padding doesn't break layout */
+}
+
+/* ===== Form Header (Logo & Company Name) ===== */
+.form-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.logo-text {
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 600;
+    color: #007bff; /* Primary color */
+    background: #e6f2ff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+}
+
+.form-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #222;
+}
+
+/* ===== Form Typography ===== */
+.form-container h2 {
+    margin: 0 0 10px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.form-container p {
+    margin: 0 0 25px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* ===== Form Input Groups ===== */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #444;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box; /* Important for padding */
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #007bff; /* Highlight on focus */
+}
+
+/* ===== Form Options (Remember Me/Forgot) ===== */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.remember-me input {
+    margin: 0;
+}
+
+.forgot-password {
+    color: #007bff;
+    text-decoration: none;
+}
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-secondary {
+    background: #f7931a; /* Orange color from image */
+    color: white;
+}
+
+/* ===== Form Footer (Sign up / Login link) ===== */
+.form-footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9rem;
+}
+
+.form-footer p {
+    margin: 0;
+}
+
+.form-footer a {
+    color: #007bff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
