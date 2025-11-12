@@ -1,4 +1,5 @@
 // src/App.jsx
+
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm.jsx';
@@ -9,12 +10,16 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes everyone can see */}
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
-        {/* DashboardApp now contains only <Routes> (no BrowserRouter inside) */}
+
+        {/* * All dashboard routes (like /tenant, /orders, etc.) 
+         * are now nested inside the DashboardApp component.
+         * We use "/*" to pass control to it.
+         */}
         <Route path="/*" element={<DashboardApp />} />
-        {/* default fallback */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+
       </Routes>
     </BrowserRouter>
   );

@@ -1,7 +1,9 @@
+// src/dashboard/DashboardApp.jsx
+
 import React, { useEffect, useMemo, useState } from "react";
 import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import NavBar from "../components/NavBar.jsx"; // ensure this path matches your project
+import NavBar from "../components/NavBar.jsx";
 import * as lucideReact from "lucide-react";
 
 /* -------------------- Axios client -------------------- */
@@ -30,7 +32,7 @@ function Shell({ children }) {
 
   const logout = () => {
     localStorage.clear();
-    navigate("/tenant-login", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -69,7 +71,9 @@ function Shell({ children }) {
 /* -------------------- Guards -------------------- */
 function TenantGuard({ children }) {
   const token = localStorage.getItem("token");
-  if (!token) return <Navigate to="/tenant-login" replace />;
+  
+  if (!token) return <Navigate to="/login" replace />; 
+  
   return children;
 }
 
@@ -87,7 +91,7 @@ function TenantLogin() {
     setError("");
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", form); // backend: auth.login for tenant
+      const res = await api.post("/auth/login", form);
       const { token, tenant } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("tenantId", tenant?._id || tenant?.id || "");
@@ -115,6 +119,9 @@ function TenantLogin() {
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button disabled={loading} className="w-full rounded-xl border px-4 py-2 hover:bg-slate-50 disabled:opacity-60">{loading ? "Signing in..." : "Sign in"}</button>
+        <div className="text-sm text-center">
+          <Link to="/login" className="text-blue-600 hover:underline">Are you store staff? Login here.</Link>
+        </div>
       </form>
     </div>
   );
@@ -127,7 +134,6 @@ function TenantDashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
-
   const tenantId = localStorage.getItem("tenantId");
 
   useEffect(() => {
@@ -136,11 +142,9 @@ function TenantDashboard() {
         setErr("");
         const me = await api.get("/tenant/me");
         setTenant(me.data);
-
         const sres = await api.get("/store");
         const storesList = sres.data?.stores || sres.data || [];
         setStores(storesList);
-
         const allUsers = [];
         for (const st of storesList) {
           try {
@@ -179,7 +183,6 @@ function TenantDashboard() {
           <div className="text-2xl font-semibold mt-1">{users.length}</div>
         </div>
       </div>
-
       <section className="space-y-2">
         <h3 className="font-semibold">Stores</h3>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -195,7 +198,6 @@ function TenantDashboard() {
           ))}
         </div>
       </section>
-
       <section className="space-y-2">
         <h3 className="font-semibold">All Users in Tenant</h3>
         <div className="overflow-auto rounded-2xl border bg-white">
@@ -227,7 +229,7 @@ function TenantDashboard() {
   );
 }
 
-/* -------------------- Store-scoped pages (orders, pickups, users, services) -------------------- */
+/* -------------------- Store-scoped pages -------------------- */
 function Orders() {
   const [q, setQ] = useState("");
   const [startDate, setStart] = useState("");
@@ -324,15 +326,15 @@ function UsersPage() {
   );
 }
 
-function ServicesPage(){
+function ServicesPage() {
   const [rows, setRows] = useState([]);
   const [form, setForm] = useState({ service_name: "", TAT: 2, products: [] });
   const [newProduct, setNewProduct] = useState({ productName: "", price: 0 });
-  const load = async ()=>{ const res = await api.get("/service"); setRows(res.data || []); };
-  useEffect(()=>{ load(); }, []);
-  const onChange = (e)=> setForm((s)=>({ ...s, [e.target.name]: e.target.value }));
-  const addProduct = ()=> { if (!newProduct.productName) return; setForm((s)=> ({ ...s, products: [...s.products, newProduct] })); setNewProduct({ productName:"", price:0 }); };
-  const create = async ()=>{ await api.post("/service", form); setForm({ service_name:"", TAT: 2, products: [] }); load(); };
+  const load = async () => { const res = await api.get("/service"); setRows(res.data || []); };
+  useEffect(() => { load(); }, []);
+  const onChange = (e) => setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const addProduct = () => { if (!newProduct.productName) return; setForm((s) => ({ ...s, products: [...s.products, newProduct] })); setNewProduct({ productName: "", price: 0 }); };
+  const create = async () => { await api.post("/service", form); setForm({ service_name: "", TAT: 2, products: [] }); load(); };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -348,7 +350,7 @@ function ServicesPage(){
               <tr key={s._id} className="border-t">
                 <td className="p-3 font-medium">{s.serviceName}</td>
                 <td className="p-3">{s.TAT} days</td>
-                <td className="p-3">{(s.products||[]).map((p)=> (<div key={p._id} className="text-xs">{p.productName} — ₹{p.price}</div>))}</td>
+                <td className="p-3">{(s.products || []).map((p) => (<div key={p._id} className="text-xs">{p.productName} — ₹{p.price}</div>))}</td>
               </tr>
             ))}
           </tbody>
@@ -358,18 +360,18 @@ function ServicesPage(){
         <div className="bg-white border rounded-2xl p-4 space-y-2">
           <h3 className="font-semibold">New Service</h3>
           <label className="text-xs text-slate-500">Service Name</label>
-          <input name="service_name" value={form.service_name} onChange={onChange} className="w-full rounded-xl border px-3 py-2"/>
+          <input name="service_name" value={form.service_name} onChange={onChange} className="w-full rounded-xl border px-3 py-2" />
           <label className="text-xs text-slate-500">TAT (days)</label>
-          <input type="number" name="TAT" value={form.TAT} onChange={onChange} className="w-full rounded-xl border px-3 py-2"/>
+          <input type="number" name="TAT" value={form.TAT} onChange={onChange} className="w-full rounded-xl border px-3 py-2" />
           <div className="border rounded-xl p-3 space-y-2">
             <div className="text-sm font-medium">Products</div>
             <div className="flex gap-2">
-              <input placeholder="Name" value={newProduct.productName} onChange={(e)=>setNewProduct((s)=>({...s, productName:e.target.value}))} className="flex-1 rounded-xl border px-3 py-2"/>
-              <input placeholder="Price" type="number" value={newProduct.price} onChange={(e)=>setNewProduct((s)=>({...s, price:Number(e.target.value)}))} className="w-28 rounded-xl border px-3 py-2"/>
+              <input placeholder="Name" value={newProduct.productName} onChange={(e) => setNewProduct((s) => ({ ...s, productName: e.target.value }))} className="flex-1 rounded-xl border px-3 py-2" />
+              <input placeholder="Price" type="number" value={newProduct.price} onChange={(e) => setNewProduct((s) => ({ ...s, price: Number(e.target.value) }))} className="w-28 rounded-xl border px-3 py-2" />
               <button onClick={addProduct} className="rounded-xl border px-3 py-2 hover:bg-slate-50">Add</button>
             </div>
             <ul className="text-xs text-slate-600 list-disc ml-5">
-              {form.products.map((p,i)=> (<li key={i}>{p.productName} — ₹{p.price}</li>))}
+              {form.products.map((p, i) => (<li key={i}>{p.productName} — ₹{p.price}</li>))}
             </ul>
           </div>
           <button onClick={create} className="w-full rounded-xl border px-4 py-2 hover:bg-slate-50">Create</button>
@@ -378,6 +380,7 @@ function ServicesPage(){
     </div>
   );
 }
+
 function Pickups() {
   const [date, setDate] = useState("");
   const [rows, setRows] = useState([]);
@@ -484,7 +487,9 @@ function Pickups() {
                   <td className="p-3">{p.pickupDate ? new Date(p.pickupDate).toLocaleString() : new Date(p.date || p.createdAt).toLocaleString()}</td>
                   <td className="p-3">{p.status}</td>
                   <td className="p-3 flex flex-wrap gap-2">
+                    {/* <-- THIS IS THE FIX. I changed </H> to </button> --> */}
                     <button onClick={() => setStatus(p._id, p.status === "Completed" ? "Assigned" : "Completed")} className="px-3 py-1.5 rounded-xl border hover:bg-slate-50">Toggle</button>
+                    {/* <-- THIS IS THE SECOND FIX. I changed </H> to </button> --> */}
                     <button onClick={() => {
                       const nd = prompt("New date (YYYY-MM-DD)", new Date().toISOString().slice(0, 10));
                       if (nd) reschedule(p._id, nd);
@@ -538,6 +543,7 @@ export default function DashboardApp() {
       <Route path="/pickups" element={<TenantGuard><Shell><Pickups /></Shell></TenantGuard>} />
       <Route path="/users" element={<TenantGuard><Shell><UsersPage /></Shell></TenantGuard>} />
       <Route path="/services" element={<TenantGuard><Shell><ServicesPage /></Shell></TenantGuard>} />
+      
       <Route path="/" element={<Navigate to="/tenant" replace />} />
       <Route path="*" element={<Navigate to="/tenant" replace />} />
     </Routes>
