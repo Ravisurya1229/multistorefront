@@ -1,18 +1,21 @@
+// src/App.jsx
 import React from 'react';
-import './style.css'; // This was already imported in main.jsx, but is fine here too
-import LoginForm from './components/LoginForm.jsx'; // Corrected import
-import RegisterForm from './components/RegisterForm.jsx'; // Corrected import
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LoginForm from './components/LoginForm.jsx';
+import RegisterForm from './components/RegisterForm.jsx';
+import DashboardApp from './dashboard/DashboardApp.jsx';
 
-function App() {
+export default function App() {
   return (
-    <div className="page-container">
-      {/* For now, we show both. Later, you will use React Router
-        to show only one at a time.
-      */}
-      <LoginForm />
-      <RegisterForm />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
+        {/* DashboardApp now contains only <Routes> (no BrowserRouter inside) */}
+        <Route path="/*" element={<DashboardApp />} />
+        {/* default fallback */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
